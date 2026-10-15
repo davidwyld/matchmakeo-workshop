@@ -1,0 +1,217 @@
+---
+title: "<img src='assets/images/logo_dark_massive.png' width='300px' /><br>matchmakEO"
+subtitle: "find your compatible imagery"
+format:
+    revealjs:
+        theme: [white] # More themes at https://quarto.org/docs/presentations/revealjs/themes.html
+        slide-number: true
+        show-slide-number: speaker
+        chalkboard: true
+        code-line-numbers: false
+        preview-links: auto
+css: style.css
+author: "David Wyld"
+date: 10/21/2026 #Date in US format... MM/DD/YYYY
+date-format: "ddd Do MMMM YYYY"
+footer: "these slides: [davidwyld.uk/quarto-presentation-template](https://davidwyld.uk/quarto-presentation-template)"
+from: markdown+emoji
+---
+
+## matchmakEO
+
++ :camera: Tool for finding earth observation (EO) imagery
++ :snake: Python package
++ :world_map: Uses a local geospatial database
++ :busts_in_silhouette: Aim to be user-friendly
++ :speech_balloon: Looking for feedback at this stage
+
+Documentation :book: [bas-quasar.github.io/matchmakeo](https://bas-quasar.github.io/matchmakeo)
+
+## Motivation
+
++ Aimed specifically at researchers
++ Provide easier access to cross-catalogue metadata analysis
++ Use the power of some technical tools but limit need for understanding
+
+
+## Where you come in{.smaller}
+
++ "alpha" testing
+	+ find bugs
+	+ try to break
+	+ stress test
+	+ importantly - record what you did and what the output was
++ feedback on the API design, e.g. the commands/class structure/conceptualisation
++ highlighting potential "gotchas" or bugs I may have missed as a non user of these data and systems
++ Any fundamental elements of usability I may be missing - e.g. we've tried to think about access to setting up a database
++ wishlist of features
++ database testing
+
+## Approach
+
++ Get metadata from catalogues
++ Put in a geospatial database
++ Write pythonic queries to find the data that you're looking for
+
+```{mermaid}
+flowchart LR
+    A[(Data Catalogue)]
+    B(<code>Catalogue</code>)
+    C(DownloadParams)
+    D(Product)
+    E[(Database)]
+    F(Query)
+    G(List of Images)
+    H(Download Images)
+    A --Metadata--> B
+    C --Supported filtering--> B
+    D --Product details--> B
+    B ==Metadata==> E
+    E --Detailed filtering--> F
+    F --Matching Images--> G
+    G -.-> H
+    style H stroke-dasharray: 5 5
+```
+
+## Features {.smaller}
+
++ Downloading
+	+ download a set of metadata without writing API calls yourself
+	+ with common interface across catalogues,
++ Querying
+	+ Utilise efficient geospatial database querying to perform more sophisticated queries,
+	+ Basic queries e.g bbox or polygon intersection, time ranges, metadata parameter value ranges,
+	+ Cross-product queries including intersections (with thresholds) and time ranges.
++ Visualisation
+	+ Use common standards so other tools such as QGIS can be used for visualisation
+
+## Catalogues
+
++ ![NASA Common Metadata Repository](./assets/images/nasa-earthdata.png) [cmr.earthdata.nasa.gov](https://cmr.earthdata.nasa.gov)
++ ![Google Earth Engine ](./assets/images/earth-engine.png) [earthengine.google.com/](https://earthengine.google.com/)
++ JAXA ![](./assets/images/g-portal.png) [gportal.jaxa.jp/](https://www.gportal.jaxa.jp/)
++ Or, implement your own or request one
+
+
+## Roadmap{.smaller}
+
+Upcoming features
+
++ Methods to interrogate basic stats from a table in the python interface, e.g. number of records etc.
++ Insert existing metadata from file or database into a table to be used in queries,
++ Query against a track to find images of, e.g. a ship's route
++ Add other metadata yourself
+
+More speculative features
+
++ QGIS plugin,
++ Non-Earth support?
+
+Roadmap: <https://github.com/orgs/bas-quasar/projects/1>
+
+## What it doesn't do
+
++ Actually download and process images (yet?)
+
+# Hands-on workshop
+
+## Database setup
+
+TL;DR
+
++ set up a database
+	+ if admin rights: use docker or postgis or spatialite locally
+	+ else: use apptainer on workstations
+	+ or: some other db, e.g. cloud postgis or managed db
+
+
+## Setup instructions{.smaller}
+
+To make the best use of time with the hands-on element of the workshop there are a couple of steps you can do beforehand.
+
+### Pre-requisites
+
++ Some familiarity with python,
++ Access to a geospatial database (see below),
++ Credentials for any metadata catalogues you might want to work with on the day (see below)
+
+## Database setup{.smaller}
+
+MatchmakEO requires access to a geospatial database, either PostGIS or Spatialite.
+
+It can be local (on your machine) or accessible in the cloud or on your network, but we don't yet support database connections over SSH (unless you set up tunnelling or port-forwarding yourself).
+
+#### Linux/MacOS Users
+
+Following the instructions in the documentation at: <https://bas-quasar.github.io/matchmakeo/databases/> set up either a PostGIS or Spatialite database by whichever means you like, it would be interesting to have a spread of different approaches so I won't recommend a particular one. 
+
+If you're going to work on the workstations, we'd recommend using apptainer (<https://bas-quasar.github.io/matchmakeo/databases/#apptainer>)
+
+## {.smaller}
+
+#### Windows Users {{< fa brands windows >}}
+
+##### With admin rights
+
+Same as above (but follow windows instructions!) 
+
+##### Without admin rights
+
+If you have a BAS IT managed Windows laptop, you'll likely have difficulty setting up any of the methods for using a local database if you don't have admin rights on your machine, so either:
+
++ use the workstations and apptainer as above,
++ use another database cluster if you have access to one and are confident doing so,
++ possibly create a database in the cloud (note: I haven't tried this myself) using a service such as:
+	+ QGIS cloud (<https://qgiscloud.com/>), or
+	+ Aiven (<https://aiven.io>)
+
+## Metadata catalogue credentials{.smaller}
+
+MatchmakEO currently supports downloading from three EO metadata catalogues:
+
++ NASA CMR (Earthdata) - we don't yet support any functionality that requires credentials, so nothing needed to use this one.
++ Google Earth Engine 
++ JAXA G-portal
+
+Therefore, you'll only need credentials if you want to try using Earth Engine or G-Portal. Follow the instructions in the authentication sections for each catalogue, in the documentation at: https://bas-quasar.github.io/matchmakeo/catalogues/
+
+
+## Install matchmakEO{.smaller}
+
+* make a working directory and change directory into it
+
+	```sh
+	mkdir matchmakeo-workshop
+	cd matchmakeo-workshop
+	```
+
+* make a virtual environment (or use conda/uv/...)
+
+	```sh
+	python -m venv .venv
+	#or
+	python3 -m venv .venv
+	```
+
+* activate the virtual environment
+
+	```sh
+	source .venv/bin/activate
+	```
+
+* ensure that your virtual environment is working as expected
+
+	```sh
+	which pip
+	```
+
+* install the matchmakeo package (specify a version)
+
+	```sh
+	pip install git+https://github.com/bas-quasar/matchmakeo.git@latest
+	```
+
+	Note: _matchmakEO will be available on pyPI soon!_
+
+
+## Set up credentials for catalogues
