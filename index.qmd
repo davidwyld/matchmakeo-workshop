@@ -83,6 +83,111 @@ flowchart LR
     style H stroke-dasharray: 5 5
 ```
 
+---
+
+### Downloading metadata {.smaller}
+
+```python
+from matchmakeo.catalogues import NasaCMR
+from matchmakeo.databases import PostGISDatabase
+from matchmakeo.download_params import NasaCMRDownloadParams
+from matchmakeo import Product
+
+database = PostGISDatabase(
+    username="postgres",
+    password="password",
+    database="matchmakeo",
+    host="localhost",
+    port=5432,
+)
+
+catalogue = NasaCMR(
+    client_id="my_name",  # NasaCMR takes a client_id as recommended by CMR
+)
+
+download_params = NasaCMRDownloadParams(
+    start_date="2020-01-01",
+    end_date="2020-01-31",
+    lat_max=-70,
+    lat_min=-90,
+    lon_max=180,
+    lon_min=-180,
+)
+
+product = Product(
+    name="MOD021KM",
+    table_name="modis_aqua",
+)
+
+catalogue.download_footprints(
+    product=product,
+    download_params=download_params,
+    database=database,
+)
+```
+
+---
+
+### Querying
+
+Simple single product queries
+
+```python
+from matchmakeo import Product, Query
+from matchmakeo.databases import PostGISDatabase
+
+database = PostGISDatabase(
+    username="postgres",
+    password="password",
+    database="matchmakeo",
+    host="localhost",
+    port=5432,
+)
+
+product = Product(
+    name="MOD021KM",
+    table_name="modis_aqua",
+)
+
+results = (
+    Query(database, product)
+    .intersects_bbox(
+        xmin=0.077591,
+        ymin=52.169931,
+        xmax=0.190887,
+        ymax=52.233477,
+        srid=4326,
+    )
+    .execute()
+)
+```
+
+---
+
+Multiple products
+
+```python
+results = Query(database, product_a, product_b).intersects_bbox(...).execute()
+```
+
+Join/intersection queries
+
+```python
+results = (
+    Query(database, product_a, product_b)
+    .where_spatiotemporal_match(
+        product_a,
+        product_b,
+        relative_to=product_a,
+        min_overlap_fraction=0.1,
+        max_time_delta=datetime.timedelta(
+            days=2
+        ), 
+    )
+    .execute()
+)
+```
+
 ## Features {.smaller}
 
 + Downloading
