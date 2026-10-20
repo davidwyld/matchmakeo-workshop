@@ -11,7 +11,7 @@
 <link href="index_files/libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.10.19">
 
-  <meta name="author" content="David Wyld">
+  <meta name="author" content="David Wyld, Tom Kelly, Thomas Zwagerman, Martin Rogers">
   <title>matchmakEO</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -213,7 +213,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-David Wyld
+<strong>David Wyld</strong>, Tom Kelly, Thomas Zwagerman, Martin Rogers
 </div>
 </div>
 </div>
@@ -242,18 +242,18 @@ David Wyld
 <section id="where-you-come-in" class="slide level2 smaller">
 <h2>Where you come in</h2>
 <ul>
-<li>“alpha” testing
+<li class="fragment">“alpha” testing
 <ul>
-<li>find bugs</li>
-<li>try to break</li>
-<li>stress test</li>
-<li>importantly - record what you did and what the output was</li>
+<li class="fragment">find bugs</li>
+<li class="fragment">try to break</li>
+<li class="fragment">stress test</li>
+<li class="fragment">importantly - record what you did and what the output was</li>
 </ul></li>
-<li>feedback on the API design, e.g.&nbsp;the commands/class structure/conceptualisation</li>
-<li>highlighting potential “gotchas” or bugs I may have missed as a non user of these data and systems</li>
-<li>Any fundamental elements of usability I may be missing - e.g.&nbsp;we’ve tried to think about access to setting up a database</li>
-<li>wishlist of features</li>
-<li>database testing</li>
+<li class="fragment">feedback on the API design, e.g.&nbsp;the commands/class structure/conceptualisation</li>
+<li class="fragment">highlighting potential “gotchas” or bugs I may have missed as a non user of these data and systems</li>
+<li class="fragment">Any fundamental elements of usability I may be missing - e.g.&nbsp;we’ve tried to think about access to setting up a database</li>
+<li class="fragment">wishlist of features</li>
+<li class="fragment">database testing</li>
 </ul>
 </section>
 <section id="approach" class="slide level2">
@@ -345,7 +345,7 @@ David Wyld
 </section>
 <section>
 <section id="hands-on-workshop" class="title-slide slide level1 center">
-<h1>Hands-on workshop</h1>
+<h1><span class="emoji" data-emoji="technologist">🧑‍💻</span> Hands-on workshop</h1>
 
 </section>
 <section id="database-setup" class="slide level2">
@@ -406,7 +406,7 @@ David Wyld
 <p>Therefore, you’ll only need credentials if you want to try using Earth Engine or G-Portal. Follow the instructions in the authentication sections for each catalogue, in the documentation at: https://bas-quasar.github.io/matchmakeo/catalogues/</p>
 </section>
 <section id="install-matchmakeo" class="slide level2 smaller">
-<h2>Install matchmakEO</h2>
+<h2><span class="emoji" data-emoji="shell">🐚</span> Install matchmakEO</h2>
 <ul>
 <li><p>make a working directory and change directory into it</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> matchmakeo-workshop</span>
@@ -424,14 +424,111 @@ David Wyld
 <p>Note: <em>matchmakEO will be available on pyPI soon!</em></p></li>
 </ul>
 </section>
-<section id="set-up-credentials-for-catalogues" class="slide level2">
-<h2>Set up credentials for catalogues</h2>
+<section id="install-other-dependencies" class="slide level2">
+<h2><span class="emoji" data-emoji="shell">🐚</span> Install other dependencies</h2>
+<p>If using G-portal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install gportal</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If using earth engine:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install earthengine-api</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For running in a notebook:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipykernel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="spin-up-your-database" class="slide level2 smaller">
+<h2><span class="emoji" data-emoji="shell">🐚</span> Spin up your database</h2>
+<ul>
+<li>Pull the official docker postgis image and convert to an apptainer container definition file</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> pull postgis.sif docker://postgis/postgis:18-master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Make some directories</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ./pg_data ./pg_run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li>Run the container persistently in the background:</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> run <span class="at">--cleanenv</span> <span class="dt">\</span></span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_USER=<span class="st">"my_user"</span> <span class="dt">\</span></span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_PASSWORD=<span class="st">"my_secure_password"</span> <span class="dt">\</span></span>
+<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_DB=<span class="st">"my_spatial_db"</span> <span class="dt">\</span></span>
+<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql/data <span class="dt">\</span></span>
+<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
+<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif postgres <span class="at">-h</span> 0.0.0.0 <span class="at">-p</span> 5432 <span class="dt">\</span></span>
+<span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> pg.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="create-your-database-object" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Create your database object</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.databases <span class="im">import</span> PostGISDatabase</span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a>database <span class="op">=</span> PostGISDatabase(</span>
+<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>    username<span class="op">=</span><span class="st">"my_user"</span>,  <span class="co"># as defined earlier</span></span>
+<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"my_secure_password"</span>,  <span class="co"># as defined earlier</span></span>
+<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"my_spatial_db"</span>,  <span class="co"># the default database name</span></span>
+<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"localhost"</span>,  <span class="co"># if running on the same host/node as the database</span></span>
+<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>    port<span class="op">=</span><span class="dv">5432</span>,  <span class="co"># the port in the above step</span></span>
+<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># check that it works</span></span>
+<span id="cb12-12"><a href="" aria-hidden="true" tabindex="-1"></a>database.<span class="ex">connect</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="define-a-catalogue-object" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Define a catalogue object</h2>
+<p><span class="emoji" data-emoji="book">📖</span> See: <a href="https://bas-quasar.github.io/matchmakeo/autoapi/matchmakeo/catalogues/" class="uri">https://bas-quasar.github.io/matchmakeo/autoapi/matchmakeo/catalogues/</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.catalogues <span class="im">import</span> NasaCMR, EarthEngine, JaxaGportal</span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> NasaCMR(</span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>    client_id<span class="op">=</span><span class="st">"my_name"</span>,  <span class="co"># NasaCMR takes a client_id as recommended by CMR</span></span>
+<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># OR</span></span>
+<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> EarthEngine(project_id<span class="op">=</span><span class="st">"my_earthengine_project"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="define-parameters-for-the-download" class="slide level2 smaller">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Define parameters for the download</h2>
+<ul>
+<li>define a <code>download_params</code> obect to filter the temporal and spatial bounds of your download</li>
+<li>some catalogues have a corresponding <code>download_params</code> type, others just use the base <code>DownloadParams</code> class</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.download_params <span class="im">import</span> NasaCMRDownloadParams</span>
+<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>download_params <span class="op">=</span> NasaCMRDownloadParams(</span>
+<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a>    start_date<span class="op">=</span><span class="st">"2020-01-01"</span>,</span>
+<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>    end_date<span class="op">=</span><span class="st">"2020-01-31"</span>,</span>
+<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_max<span class="op">=-</span><span class="dv">70</span>,</span>
+<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_min<span class="op">=-</span><span class="dv">90</span>,</span>
+<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_max<span class="op">=</span><span class="dv">180</span>,</span>
+<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_min<span class="op">=-</span><span class="dv">180</span>,</span>
+<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="define-which-product-to-download" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Define which product to download</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Product</span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> Product(</span>
+<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"MOD021KM"</span>,</span>
+<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a>    table_name<span class="op">=</span><span class="st">"modis_aqua"</span>,</span>
+<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="run-the-download" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Run the download</h2>
+<p>Run the download, passing in the <code>product</code>, <code>download_params</code> and <code>database</code> objects as arguments.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue.download_footprints(</span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>    product<span class="op">=</span>product,</span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a>    download_params<span class="op">=</span>download_params,</span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span>database,</span>
+<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optionally set dry run to be True, each catalogue behaves differently but nothing will be inserted into the database if so</span></span>
+<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when dry_run=True database can be None, so you can run without a database set up</span></span>
+<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dry_run=True,</span></span>
+<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="download-another-product-from-somewhere-else" class="slide level2">
+<h2>Download another product from somewhere else!</h2>
 
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>these slides: <a href="https://davidwyld.uk/quarto-presentation-template">davidwyld.uk/quarto-presentation-template</a></p>
+<p>these slides: <a href="https://davidwyld.uk/matchmakeo-workshop">davidwyld.uk/matchmakeo-workshop</a></p>
 </div>
 </div></div>
 
