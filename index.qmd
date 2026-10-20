@@ -51,6 +51,12 @@ Documentation :book: [bas-quasar.github.io/matchmakeo](https://bas-quasar.github
 
 :::
 
+## :speech_balloon: Feedback
+
++ Open GitHub issues
++ Talk to me
++ Email me `dalby@bas.ac.uk`
+
 ## Approach
 
 + Get metadata from catalogues
@@ -145,6 +151,8 @@ MatchmakEO requires access to a geospatial database, either PostGIS or Spatialit
 
 It can be local (on your machine) or accessible in the cloud or on your network, but we don't yet support database connections over SSH (unless you set up tunnelling or port-forwarding yourself).
 
+<hr>
+
 #### Linux/MacOS Users
 
 Following the instructions in the documentation at: <https://bas-quasar.github.io/matchmakeo/databases/> set up either a PostGIS or Spatialite database by whichever means you like, it would be interesting to have a spread of different approaches so I won't recommend a particular one. 
@@ -155,9 +163,13 @@ If you're going to work on the workstations, we'd recommend using apptainer (<ht
 
 #### Windows Users {{< fa brands windows >}}
 
+<hr>
+
 ##### With admin rights
 
 Same as above (but follow windows instructions!) 
+
+<hr>
 
 ##### Without admin rights
 
@@ -212,7 +224,7 @@ Therefore, you'll only need credentials if you want to try using Earth Engine or
 * install the matchmakeo package (specify a version)
 
 	```sh
-	pip install git+https://github.com/bas-quasar/matchmakeo.git@latest
+	pip install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.1
 	```
 
 	Note: _matchmakEO will be available on pyPI soon!_
@@ -344,3 +356,89 @@ catalogue.download_footprints(
 
 ## Download another product from somewhere else!
 
+## :snake: Run some queries
+
+Construct and execute a simple bounding box query
+
+```python
+from matchmakeo import Query
+
+results = (  # use brackets to separate a long query across multiple lines
+    Query(database, product)
+    .intersects_bbox(
+        min_x=0.077591,
+        min_y=52.169931,
+        max_x=0.190887,
+        max_y=52.233477,
+        srid=4326,
+    )
+    .execute()
+)
+```
+
+---
+
+For single products, `Query.execute()` returns a `matchmakeo.ResultSet` object which can be used to return the results in a few different formats.
+
+```python
+len(results)  # returns the number of results
+results.get_ids()  # returns a list of the ids of matching images
+results.to_dicts()  # returns a list of dictionaries, each one representing one image and its metadata
+```
+
+## :snake: Query multiple products
+
+### Simple queries
+
+```python
+results = Query(database, product_a, product_b).intersects_bbox(...).execute()
+```
+
+## :snake: Join/intersection queries {.smaller}
+
+```python
+import datetime
+
+results = (
+    Query(database, product_a, product_b)
+    .where_spatiotemporal_match(
+        product_a,
+        product_b,
+        relative_to=product_a,  # the product which the overlap fraction is measured against
+        min_overlap_fraction=0.1,  # the minimum fraction of the `relative_to` product which is covered by the other product
+        max_time_delta=datetime.timedelta(
+            days=2
+        ),  # the time difference allowed between overlapping pairs
+    )
+    .execute()
+)
+
+# results for more than one product are MatchResultSet objects
+# they have the same methods as ResultSet, such as get_ids()
+results.get_ids()
+
+# but .to_dicts() returns a list of dicts containing dictionaries each representing a single metadata product
+results.to_dicts()
+```
+
+## :snake: Chaining queries
+
+```python
+results = (
+    Query(database, product_a, product_b)
+    .intersects_bbox(...)
+    .where_spatiotemporal_match(...)
+    .execute()
+)
+```
+
+## :shell: Finally..
+
+Stop the database container
+
+```sh
+apptainer exec \
+    --bind ./pg_data:/var/lib/postgresql \
+    --bind ./pg_run:/var/run/postgresql \
+    postgis.sif pg_ctl -D /var/lib/postgresql stop -m fast
+```
