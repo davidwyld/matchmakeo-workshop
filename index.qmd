@@ -10,7 +10,7 @@ format:
         code-line-numbers: false
         preview-links: auto
 css: style.css
-author: "**David Wyld**, Tom Kelly, Thomas Zwagerman, Martin Rogers"
+author: "**David Wyld**, Tom Kelly, Martin Rogers"
 date: 10/21/2026 #Date in US format... MM/DD/YYYY
 date-format: "ddd Do MMMM YYYY"
 footer: "these slides: [davidwyld.uk/matchmakeo-workshop](https://davidwyld.uk/matchmakeo-workshop)"
@@ -227,6 +227,12 @@ Roadmap: <https://github.com/orgs/bas-quasar/projects/1>
 ## What it doesn't do
 
 + Actually download and process images (yet?)
+
+## If you do use matchmakEO
+
+Please cite the package:
+
+> Wyld, D., Kelly, T., & Rogers, M. matchmakeo [Computer software]. https://github.com/bas-quasar/matchmakeo
 
 # :technologist: Hands-on workshop
 
