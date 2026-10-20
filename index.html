@@ -256,6 +256,14 @@
 <li class="fragment">database testing</li>
 </ul>
 </section>
+<section id="feedback" class="slide level2">
+<h2><span class="emoji" data-emoji="speech_balloon">💬</span> Feedback</h2>
+<ul>
+<li>Open GitHub issues</li>
+<li>Talk to me</li>
+<li>Email me <code>dalby@bas.ac.uk</code></li>
+</ul>
+</section>
 <section id="approach" class="slide level2">
 <h2>Approach</h2>
 <ul>
@@ -374,6 +382,7 @@
 <h2>Database setup</h2>
 <p>MatchmakEO requires access to a geospatial database, either PostGIS or Spatialite.</p>
 <p>It can be local (on your machine) or accessible in the cloud or on your network, but we don’t yet support database connections over SSH (unless you set up tunnelling or port-forwarding yourself).</p>
+<hr>
 <h4 id="linuxmacos-users">Linux/MacOS Users</h4>
 <p>Following the instructions in the documentation at: <a href="https://bas-quasar.github.io/matchmakeo/databases/" class="uri">https://bas-quasar.github.io/matchmakeo/databases/</a> set up either a PostGIS or Spatialite database by whichever means you like, it would be interesting to have a spread of different approaches so I won’t recommend a particular one.</p>
 <p>If you’re going to work on the workstations, we’d recommend using apptainer (<a href="https://bas-quasar.github.io/matchmakeo/databases/#apptainer" class="uri">https://bas-quasar.github.io/matchmakeo/databases/#apptainer</a>)</p>
@@ -381,8 +390,10 @@
 <section id="section" class="slide level2 smaller">
 <h2></h2>
 <h4 id="windows-users-b58fc729-690b-4000-b19f-365a4093b2ff7b7b3c206661206272616e64732077696e646f7773203e7d7d">Windows Users <i class="fa-brands fa-windows" aria-label="windows"></i></h4>
+<hr>
 <h5 id="with-admin-rights">With admin rights</h5>
 <p>Same as above (but follow windows instructions!)</p>
+<hr>
 <h5 id="without-admin-rights">Without admin rights</h5>
 <p>If you have a BAS IT managed Windows laptop, you’ll likely have difficulty setting up any of the methods for using a local database if you don’t have admin rights on your machine, so either:</p>
 <ul>
@@ -420,7 +431,7 @@
 <li><p>ensure that your virtual environment is working as expected</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> pip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>install the matchmakeo package (specify a version)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install git+https://github.com/bas-quasar/matchmakeo.git@latest</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Note: <em>matchmakEO will be available on pyPI soon!</em></p></li>
 </ul>
 </section>
@@ -523,6 +534,77 @@
 </section>
 <section id="download-another-product-from-somewhere-else" class="slide level2">
 <h2>Download another product from somewhere else!</h2>
+</section>
+<section id="run-some-queries" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Run some queries</h2>
+<p>Construct and execute a simple bounding box query</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Query</span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (  <span class="co"># use brackets to separate a long query across multiple lines</span></span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product)</span>
+<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(</span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>        min_x<span class="op">=</span><span class="fl">0.077591</span>,</span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>        min_y<span class="op">=</span><span class="fl">52.169931</span>,</span>
+<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a>        max_x<span class="op">=</span><span class="fl">0.190887</span>,</span>
+<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>        max_y<span class="op">=</span><span class="fl">52.233477</span>,</span>
+<span id="cb17-10"><a href="" aria-hidden="true" tabindex="-1"></a>        srid<span class="op">=</span><span class="dv">4326</span>,</span>
+<span id="cb17-11"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-12"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb17-13"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section class="slide level2">
+
+<p>For single products, <code>Query.execute()</code> returns a <code>matchmakeo.ResultSet</code> object which can be used to return the results in a few different formats.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(results)  <span class="co"># returns the number of results</span></span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()  <span class="co"># returns a list of the ids of matching images</span></span>
+<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()  <span class="co"># returns a list of dictionaries, each one representing one image and its metadata</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="query-multiple-products" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Query multiple products</h2>
+<h3 id="simple-queries">Simple queries</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> Query(database, product_a, product_b).intersects_bbox(...).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="joinintersection-queries" class="slide level2 smaller">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Join/intersection queries</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(</span>
+<span id="cb20-6"><a href="" aria-hidden="true" tabindex="-1"></a>        product_a,</span>
+<span id="cb20-7"><a href="" aria-hidden="true" tabindex="-1"></a>        product_b,</span>
+<span id="cb20-8"><a href="" aria-hidden="true" tabindex="-1"></a>        relative_to<span class="op">=</span>product_a,  <span class="co"># the product which the overlap fraction is measured against</span></span>
+<span id="cb20-9"><a href="" aria-hidden="true" tabindex="-1"></a>        min_overlap_fraction<span class="op">=</span><span class="fl">0.1</span>,  <span class="co"># the minimum fraction of the `relative_to` product which is covered by the other product</span></span>
+<span id="cb20-10"><a href="" aria-hidden="true" tabindex="-1"></a>        max_time_delta<span class="op">=</span>datetime.timedelta(</span>
+<span id="cb20-11"><a href="" aria-hidden="true" tabindex="-1"></a>            days<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb20-12"><a href="" aria-hidden="true" tabindex="-1"></a>        ),  <span class="co"># the time difference allowed between overlapping pairs</span></span>
+<span id="cb20-13"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-14"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb20-15"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-16"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># results for more than one product are MatchResultSet objects</span></span>
+<span id="cb20-18"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># they have the same methods as ResultSet, such as get_ids()</span></span>
+<span id="cb20-19"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()</span>
+<span id="cb20-20"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># but .to_dicts() returns a list of dicts containing dictionaries each representing a single metadata product</span></span>
+<span id="cb20-22"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="chaining-queries" class="slide level2">
+<h2><span class="emoji" data-emoji="snake">🐍</span> Chaining queries</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
+<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(...)</span>
+<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(...)</span>
+<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb21-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="finally.." class="slide level2">
+<h2><span class="emoji" data-emoji="shell">🐚</span> Finally..</h2>
+<p>Stop the database container</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="dt">\</span></span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
+<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif pg_ctl <span class="at">-D</span> /var/lib/postgresql stop <span class="at">-m</span> fast</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </section></section>
     </div>
