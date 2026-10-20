@@ -300,6 +300,97 @@
 </div>
 </div>
 </section>
+<section class="slide level2">
+
+<h3 class="smaller" id="downloading-metadata">Downloading metadata</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.catalogues <span class="im">import</span> NasaCMR</span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.databases <span class="im">import</span> PostGISDatabase</span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.download_params <span class="im">import</span> NasaCMRDownloadParams</span>
+<span id="cb1-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Product</span>
+<span id="cb1-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="" aria-hidden="true" tabindex="-1"></a>database <span class="op">=</span> PostGISDatabase(</span>
+<span id="cb1-7"><a href="" aria-hidden="true" tabindex="-1"></a>    username<span class="op">=</span><span class="st">"postgres"</span>,</span>
+<span id="cb1-8"><a href="" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"password"</span>,</span>
+<span id="cb1-9"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"matchmakeo"</span>,</span>
+<span id="cb1-10"><a href="" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"localhost"</span>,</span>
+<span id="cb1-11"><a href="" aria-hidden="true" tabindex="-1"></a>    port<span class="op">=</span><span class="dv">5432</span>,</span>
+<span id="cb1-12"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-13"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> NasaCMR(</span>
+<span id="cb1-15"><a href="" aria-hidden="true" tabindex="-1"></a>    client_id<span class="op">=</span><span class="st">"my_name"</span>,  <span class="co"># NasaCMR takes a client_id as recommended by CMR</span></span>
+<span id="cb1-16"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="" aria-hidden="true" tabindex="-1"></a>download_params <span class="op">=</span> NasaCMRDownloadParams(</span>
+<span id="cb1-19"><a href="" aria-hidden="true" tabindex="-1"></a>    start_date<span class="op">=</span><span class="st">"2020-01-01"</span>,</span>
+<span id="cb1-20"><a href="" aria-hidden="true" tabindex="-1"></a>    end_date<span class="op">=</span><span class="st">"2020-01-31"</span>,</span>
+<span id="cb1-21"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_max<span class="op">=-</span><span class="dv">70</span>,</span>
+<span id="cb1-22"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_min<span class="op">=-</span><span class="dv">90</span>,</span>
+<span id="cb1-23"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_max<span class="op">=</span><span class="dv">180</span>,</span>
+<span id="cb1-24"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_min<span class="op">=-</span><span class="dv">180</span>,</span>
+<span id="cb1-25"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-26"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> Product(</span>
+<span id="cb1-28"><a href="" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"MOD021KM"</span>,</span>
+<span id="cb1-29"><a href="" aria-hidden="true" tabindex="-1"></a>    table_name<span class="op">=</span><span class="st">"modis_aqua"</span>,</span>
+<span id="cb1-30"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-31"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue.download_footprints(</span>
+<span id="cb1-33"><a href="" aria-hidden="true" tabindex="-1"></a>    product<span class="op">=</span>product,</span>
+<span id="cb1-34"><a href="" aria-hidden="true" tabindex="-1"></a>    download_params<span class="op">=</span>download_params,</span>
+<span id="cb1-35"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span>database,</span>
+<span id="cb1-36"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section class="slide level2">
+
+<h3 id="querying">Querying</h3>
+<p>Simple single product queries</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Product, Query</span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.databases <span class="im">import</span> PostGISDatabase</span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="" aria-hidden="true" tabindex="-1"></a>database <span class="op">=</span> PostGISDatabase(</span>
+<span id="cb2-5"><a href="" aria-hidden="true" tabindex="-1"></a>    username<span class="op">=</span><span class="st">"postgres"</span>,</span>
+<span id="cb2-6"><a href="" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"password"</span>,</span>
+<span id="cb2-7"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"matchmakeo"</span>,</span>
+<span id="cb2-8"><a href="" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"localhost"</span>,</span>
+<span id="cb2-9"><a href="" aria-hidden="true" tabindex="-1"></a>    port<span class="op">=</span><span class="dv">5432</span>,</span>
+<span id="cb2-10"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-11"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> Product(</span>
+<span id="cb2-13"><a href="" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"MOD021KM"</span>,</span>
+<span id="cb2-14"><a href="" aria-hidden="true" tabindex="-1"></a>    table_name<span class="op">=</span><span class="st">"modis_aqua"</span>,</span>
+<span id="cb2-15"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-16"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb2-18"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product)</span>
+<span id="cb2-19"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(</span>
+<span id="cb2-20"><a href="" aria-hidden="true" tabindex="-1"></a>        xmin<span class="op">=</span><span class="fl">0.077591</span>,</span>
+<span id="cb2-21"><a href="" aria-hidden="true" tabindex="-1"></a>        ymin<span class="op">=</span><span class="fl">52.169931</span>,</span>
+<span id="cb2-22"><a href="" aria-hidden="true" tabindex="-1"></a>        xmax<span class="op">=</span><span class="fl">0.190887</span>,</span>
+<span id="cb2-23"><a href="" aria-hidden="true" tabindex="-1"></a>        ymax<span class="op">=</span><span class="fl">52.233477</span>,</span>
+<span id="cb2-24"><a href="" aria-hidden="true" tabindex="-1"></a>        srid<span class="op">=</span><span class="dv">4326</span>,</span>
+<span id="cb2-25"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-26"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb2-27"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section class="slide level2">
+
+<p>Multiple products</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> Query(database, product_a, product_b).intersects_bbox(...).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Join/intersection queries</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(</span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a>        product_a,</span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a>        product_b,</span>
+<span id="cb4-6"><a href="" aria-hidden="true" tabindex="-1"></a>        relative_to<span class="op">=</span>product_a,</span>
+<span id="cb4-7"><a href="" aria-hidden="true" tabindex="-1"></a>        min_overlap_fraction<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb4-8"><a href="" aria-hidden="true" tabindex="-1"></a>        max_time_delta<span class="op">=</span>datetime.timedelta(</span>
+<span id="cb4-9"><a href="" aria-hidden="true" tabindex="-1"></a>            days<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb4-10"><a href="" aria-hidden="true" tabindex="-1"></a>        ), </span>
+<span id="cb4-11"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-12"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb4-13"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="features" class="slide level2 smaller">
 <h2>Features</h2>
 <ul>
@@ -420,79 +511,79 @@
 <h2><span class="emoji" data-emoji="shell">🐚</span> Install matchmakEO</h2>
 <ul>
 <li><p>make a working directory and change directory into it</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> matchmakeo-workshop</span>
-<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> matchmakeo-workshop</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> matchmakeo-workshop</span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> matchmakeo-workshop</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>make a virtual environment (or use conda/uv/…)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span>
-<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#or</span></span>
-<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co">#or</span></span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>activate the virtual environment</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>ensure that your virtual environment is working as expected</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> pip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> pip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>install the matchmakeo package (specify a version)</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Note: <em>matchmakEO will be available on pyPI soon!</em></p></li>
 </ul>
 </section>
 <section id="install-other-dependencies" class="slide level2">
 <h2><span class="emoji" data-emoji="shell">🐚</span> Install other dependencies</h2>
 <p>If using G-portal:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install gportal</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install gportal</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>If using earth engine:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install earthengine-api</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install earthengine-api</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>For running in a notebook:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipykernel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install ipykernel</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="spin-up-your-database" class="slide level2 smaller">
 <h2><span class="emoji" data-emoji="shell">🐚</span> Spin up your database</h2>
 <ul>
 <li>Pull the official docker postgis image and convert to an apptainer container definition file</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> pull postgis.sif docker://postgis/postgis:18-master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> pull postgis.sif docker://postgis/postgis:18-master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Make some directories</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ./pg_data ./pg_run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ./pg_data ./pg_run</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li>Run the container persistently in the background:</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> run <span class="at">--cleanenv</span> <span class="dt">\</span></span>
-<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_USER=<span class="st">"my_user"</span> <span class="dt">\</span></span>
-<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_PASSWORD=<span class="st">"my_secure_password"</span> <span class="dt">\</span></span>
-<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_DB=<span class="st">"my_spatial_db"</span> <span class="dt">\</span></span>
-<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
-<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
-<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif postgres <span class="at">-h</span> 0.0.0.0 <span class="at">-p</span> 5432 <span class="dt">\</span></span>
-<span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> pg.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> run <span class="at">--cleanenv</span> <span class="dt">\</span></span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_USER=<span class="st">"my_user"</span> <span class="dt">\</span></span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_PASSWORD=<span class="st">"my_secure_password"</span> <span class="dt">\</span></span>
+<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_DB=<span class="st">"my_spatial_db"</span> <span class="dt">\</span></span>
+<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
+<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
+<span id="cb15-7"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif postgres <span class="at">-h</span> 0.0.0.0 <span class="at">-p</span> 5432 <span class="dt">\</span></span>
+<span id="cb15-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> pg.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="create-your-database-object" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Create your database object</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.databases <span class="im">import</span> PostGISDatabase</span>
-<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a>database <span class="op">=</span> PostGISDatabase(</span>
-<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>    username<span class="op">=</span><span class="st">"my_user"</span>,  <span class="co"># as defined earlier</span></span>
-<span id="cb12-5"><a href="" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"my_secure_password"</span>,  <span class="co"># as defined earlier</span></span>
-<span id="cb12-6"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"my_spatial_db"</span>,  <span class="co"># the default database name</span></span>
-<span id="cb12-7"><a href="" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"localhost"</span>,  <span class="co"># if running on the same host/node as the database</span></span>
-<span id="cb12-8"><a href="" aria-hidden="true" tabindex="-1"></a>    port<span class="op">=</span><span class="dv">5432</span>,  <span class="co"># the port in the above step</span></span>
-<span id="cb12-9"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># check that it works</span></span>
-<span id="cb12-12"><a href="" aria-hidden="true" tabindex="-1"></a>database.<span class="ex">connect</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.databases <span class="im">import</span> PostGISDatabase</span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a>database <span class="op">=</span> PostGISDatabase(</span>
+<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>    username<span class="op">=</span><span class="st">"my_user"</span>,  <span class="co"># as defined earlier</span></span>
+<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"my_secure_password"</span>,  <span class="co"># as defined earlier</span></span>
+<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"my_spatial_db"</span>,  <span class="co"># the default database name</span></span>
+<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"localhost"</span>,  <span class="co"># if running on the same host/node as the database</span></span>
+<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>    port<span class="op">=</span><span class="dv">5432</span>,  <span class="co"># the port in the above step</span></span>
+<span id="cb16-9"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-10"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># check that it works</span></span>
+<span id="cb16-12"><a href="" aria-hidden="true" tabindex="-1"></a>database.<span class="ex">connect</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="define-a-catalogue-object" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Define a catalogue object</h2>
 <p><span class="emoji" data-emoji="book">📖</span> See: <a href="https://bas-quasar.github.io/matchmakeo/autoapi/matchmakeo/catalogues/" class="uri">https://bas-quasar.github.io/matchmakeo/autoapi/matchmakeo/catalogues/</a></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.catalogues <span class="im">import</span> NasaCMR, EarthEngine, JaxaGportal</span>
-<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> NasaCMR(</span>
-<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>    client_id<span class="op">=</span><span class="st">"my_name"</span>,  <span class="co"># NasaCMR takes a client_id as recommended by CMR</span></span>
-<span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># OR</span></span>
-<span id="cb13-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> EarthEngine(project_id<span class="op">=</span><span class="st">"my_earthengine_project"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.catalogues <span class="im">import</span> NasaCMR, EarthEngine, JaxaGportal</span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> NasaCMR(</span>
+<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>    client_id<span class="op">=</span><span class="st">"my_name"</span>,  <span class="co"># NasaCMR takes a client_id as recommended by CMR</span></span>
+<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># OR</span></span>
+<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue <span class="op">=</span> EarthEngine(project_id<span class="op">=</span><span class="st">"my_earthengine_project"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="define-parameters-for-the-download" class="slide level2 smaller">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Define parameters for the download</h2>
@@ -500,37 +591,37 @@
 <li>define a <code>download_params</code> obect to filter the temporal and spatial bounds of your download</li>
 <li>some catalogues have a corresponding <code>download_params</code> type, others just use the base <code>DownloadParams</code> class</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.download_params <span class="im">import</span> NasaCMRDownloadParams</span>
-<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a>download_params <span class="op">=</span> NasaCMRDownloadParams(</span>
-<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a>    start_date<span class="op">=</span><span class="st">"2020-01-01"</span>,</span>
-<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a>    end_date<span class="op">=</span><span class="st">"2020-01-31"</span>,</span>
-<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_max<span class="op">=-</span><span class="dv">70</span>,</span>
-<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_min<span class="op">=-</span><span class="dv">90</span>,</span>
-<span id="cb14-8"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_max<span class="op">=</span><span class="dv">180</span>,</span>
-<span id="cb14-9"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_min<span class="op">=-</span><span class="dv">180</span>,</span>
-<span id="cb14-10"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo.download_params <span class="im">import</span> NasaCMRDownloadParams</span>
+<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a>download_params <span class="op">=</span> NasaCMRDownloadParams(</span>
+<span id="cb18-4"><a href="" aria-hidden="true" tabindex="-1"></a>    start_date<span class="op">=</span><span class="st">"2020-01-01"</span>,</span>
+<span id="cb18-5"><a href="" aria-hidden="true" tabindex="-1"></a>    end_date<span class="op">=</span><span class="st">"2020-01-31"</span>,</span>
+<span id="cb18-6"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_max<span class="op">=-</span><span class="dv">70</span>,</span>
+<span id="cb18-7"><a href="" aria-hidden="true" tabindex="-1"></a>    lat_min<span class="op">=-</span><span class="dv">90</span>,</span>
+<span id="cb18-8"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_max<span class="op">=</span><span class="dv">180</span>,</span>
+<span id="cb18-9"><a href="" aria-hidden="true" tabindex="-1"></a>    lon_min<span class="op">=-</span><span class="dv">180</span>,</span>
+<span id="cb18-10"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="define-which-product-to-download" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Define which product to download</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Product</span>
-<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> Product(</span>
-<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"MOD021KM"</span>,</span>
-<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a>    table_name<span class="op">=</span><span class="st">"modis_aqua"</span>,</span>
-<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Product</span>
+<span id="cb19-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="" aria-hidden="true" tabindex="-1"></a>product <span class="op">=</span> Product(</span>
+<span id="cb19-4"><a href="" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"MOD021KM"</span>,</span>
+<span id="cb19-5"><a href="" aria-hidden="true" tabindex="-1"></a>    table_name<span class="op">=</span><span class="st">"modis_aqua"</span>,</span>
+<span id="cb19-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="run-the-download" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Run the download</h2>
 <p>Run the download, passing in the <code>product</code>, <code>download_params</code> and <code>database</code> objects as arguments.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue.download_footprints(</span>
-<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a>    product<span class="op">=</span>product,</span>
-<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a>    download_params<span class="op">=</span>download_params,</span>
-<span id="cb16-4"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span>database,</span>
-<span id="cb16-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optionally set dry run to be True, each catalogue behaves differently but nothing will be inserted into the database if so</span></span>
-<span id="cb16-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when dry_run=True database can be None, so you can run without a database set up</span></span>
-<span id="cb16-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dry_run=True,</span></span>
-<span id="cb16-8"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a>catalogue.download_footprints(</span>
+<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a>    product<span class="op">=</span>product,</span>
+<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>    download_params<span class="op">=</span>download_params,</span>
+<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span>database,</span>
+<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># optionally set dry run to be True, each catalogue behaves differently but nothing will be inserted into the database if so</span></span>
+<span id="cb20-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># when dry_run=True database can be None, so you can run without a database set up</span></span>
+<span id="cb20-7"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="co"># dry_run=True,</span></span>
+<span id="cb20-8"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="download-another-product-from-somewhere-else" class="slide level2">
 <h2>Download another product from somewhere else!</h2>
@@ -538,73 +629,73 @@
 <section id="run-some-queries" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Run some queries</h2>
 <p>Construct and execute a simple bounding box query</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Query</span>
-<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (  <span class="co"># use brackets to separate a long query across multiple lines</span></span>
-<span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product)</span>
-<span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(</span>
-<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>        xmin<span class="op">=</span><span class="fl">0.077591</span>,</span>
-<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>        ymin<span class="op">=</span><span class="fl">52.169931</span>,</span>
-<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a>        xmax<span class="op">=</span><span class="fl">0.190887</span>,</span>
-<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>        ymax<span class="op">=</span><span class="fl">52.233477</span>,</span>
-<span id="cb17-10"><a href="" aria-hidden="true" tabindex="-1"></a>        srid<span class="op">=</span><span class="dv">4326</span>,</span>
-<span id="cb17-11"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-12"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
-<span id="cb17-13"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matchmakeo <span class="im">import</span> Query</span>
+<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (  <span class="co"># use brackets to separate a long query across multiple lines</span></span>
+<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product)</span>
+<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(</span>
+<span id="cb21-6"><a href="" aria-hidden="true" tabindex="-1"></a>        xmin<span class="op">=</span><span class="fl">0.077591</span>,</span>
+<span id="cb21-7"><a href="" aria-hidden="true" tabindex="-1"></a>        ymin<span class="op">=</span><span class="fl">52.169931</span>,</span>
+<span id="cb21-8"><a href="" aria-hidden="true" tabindex="-1"></a>        xmax<span class="op">=</span><span class="fl">0.190887</span>,</span>
+<span id="cb21-9"><a href="" aria-hidden="true" tabindex="-1"></a>        ymax<span class="op">=</span><span class="fl">52.233477</span>,</span>
+<span id="cb21-10"><a href="" aria-hidden="true" tabindex="-1"></a>        srid<span class="op">=</span><span class="dv">4326</span>,</span>
+<span id="cb21-11"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-12"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb21-13"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section class="slide level2">
 
 <p>For single products, <code>Query.execute()</code> returns a <code>matchmakeo.ResultSet</code> object which can be used to return the results in a few different formats.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(results)  <span class="co"># returns the number of results</span></span>
-<span id="cb18-2"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()  <span class="co"># returns a list of the ids of matching images</span></span>
-<span id="cb18-3"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()  <span class="co"># returns a list of dictionaries, each one representing one image and its metadata</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(results)  <span class="co"># returns the number of results</span></span>
+<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()  <span class="co"># returns a list of the ids of matching images</span></span>
+<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()  <span class="co"># returns a list of dictionaries, each one representing one image and its metadata</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="query-multiple-products" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Query multiple products</h2>
 <h3 id="simple-queries">Simple queries</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> Query(database, product_a, product_b).intersects_bbox(...).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> Query(database, product_a, product_b).intersects_bbox(...).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="joinintersection-queries" class="slide level2 smaller">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Join/intersection queries</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
-<span id="cb20-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
-<span id="cb20-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
-<span id="cb20-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(</span>
-<span id="cb20-6"><a href="" aria-hidden="true" tabindex="-1"></a>        product_a,</span>
-<span id="cb20-7"><a href="" aria-hidden="true" tabindex="-1"></a>        product_b,</span>
-<span id="cb20-8"><a href="" aria-hidden="true" tabindex="-1"></a>        relative_to<span class="op">=</span>product_a,  <span class="co"># the product which the overlap fraction is measured against</span></span>
-<span id="cb20-9"><a href="" aria-hidden="true" tabindex="-1"></a>        min_overlap_fraction<span class="op">=</span><span class="fl">0.1</span>,  <span class="co"># the minimum fraction of the `relative_to` product which is covered by the other product</span></span>
-<span id="cb20-10"><a href="" aria-hidden="true" tabindex="-1"></a>        max_time_delta<span class="op">=</span>datetime.timedelta(</span>
-<span id="cb20-11"><a href="" aria-hidden="true" tabindex="-1"></a>            days<span class="op">=</span><span class="dv">2</span></span>
-<span id="cb20-12"><a href="" aria-hidden="true" tabindex="-1"></a>        ),  <span class="co"># the time difference allowed between overlapping pairs</span></span>
-<span id="cb20-13"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-14"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
-<span id="cb20-15"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-16"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># results for more than one product are MatchResultSet objects</span></span>
-<span id="cb20-18"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># they have the same methods as ResultSet, such as get_ids()</span></span>
-<span id="cb20-19"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()</span>
-<span id="cb20-20"><a href="" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-21"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># but .to_dicts() returns a list of dicts containing dictionaries each representing a single metadata product</span></span>
-<span id="cb20-22"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb24-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb24-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
+<span id="cb24-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(</span>
+<span id="cb24-6"><a href="" aria-hidden="true" tabindex="-1"></a>        product_a,</span>
+<span id="cb24-7"><a href="" aria-hidden="true" tabindex="-1"></a>        product_b,</span>
+<span id="cb24-8"><a href="" aria-hidden="true" tabindex="-1"></a>        relative_to<span class="op">=</span>product_a,  <span class="co"># the product which the overlap fraction is measured against</span></span>
+<span id="cb24-9"><a href="" aria-hidden="true" tabindex="-1"></a>        min_overlap_fraction<span class="op">=</span><span class="fl">0.1</span>,  <span class="co"># the minimum fraction of the `relative_to` product which is covered by the other product</span></span>
+<span id="cb24-10"><a href="" aria-hidden="true" tabindex="-1"></a>        max_time_delta<span class="op">=</span>datetime.timedelta(</span>
+<span id="cb24-11"><a href="" aria-hidden="true" tabindex="-1"></a>            days<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb24-12"><a href="" aria-hidden="true" tabindex="-1"></a>        ),  <span class="co"># the time difference allowed between overlapping pairs</span></span>
+<span id="cb24-13"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-14"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb24-15"><a href="" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-16"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># results for more than one product are MatchResultSet objects</span></span>
+<span id="cb24-18"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># they have the same methods as ResultSet, such as get_ids()</span></span>
+<span id="cb24-19"><a href="" aria-hidden="true" tabindex="-1"></a>results.get_ids()</span>
+<span id="cb24-20"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># but .to_dicts() returns a list of dicts containing dictionaries each representing a single metadata product</span></span>
+<span id="cb24-22"><a href="" aria-hidden="true" tabindex="-1"></a>results.to_dicts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="chaining-queries" class="slide level2">
 <h2><span class="emoji" data-emoji="snake">🐍</span> Chaining queries</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
-<span id="cb21-2"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
-<span id="cb21-3"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(...)</span>
-<span id="cb21-4"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(...)</span>
-<span id="cb21-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
-<span id="cb21-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (</span>
+<span id="cb25-2"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product_a, product_b)</span>
+<span id="cb25-3"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(...)</span>
+<span id="cb25-4"><a href="" aria-hidden="true" tabindex="-1"></a>    .where_spatiotemporal_match(...)</span>
+<span id="cb25-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
+<span id="cb25-6"><a href="" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="finally.." class="slide level2">
 <h2><span class="emoji" data-emoji="shell">🐚</span> Finally..</h2>
 <p>Stop the database container</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="dt">\</span></span>
-<span id="cb22-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
-<span id="cb22-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
-<span id="cb22-4"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif pg_ctl <span class="at">-D</span> /var/lib/postgresql stop <span class="at">-m</span> fast</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> exec <span class="dt">\</span></span>
+<span id="cb26-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
+<span id="cb26-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
+<span id="cb26-4"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif pg_ctl <span class="at">-D</span> /var/lib/postgresql stop <span class="at">-m</span> fast</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </section></section>
     </div>
