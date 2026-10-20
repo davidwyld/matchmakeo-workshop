@@ -461,7 +461,7 @@
 <span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_USER=<span class="st">"my_user"</span> <span class="dt">\</span></span>
 <span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_PASSWORD=<span class="st">"my_secure_password"</span> <span class="dt">\</span></span>
 <span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--env</span> POSTGRES_DB=<span class="st">"my_spatial_db"</span> <span class="dt">\</span></span>
-<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql/data <span class="dt">\</span></span>
+<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_data:/var/lib/postgresql <span class="dt">\</span></span>
 <span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">--bind</span> ./pg_run:/var/run/postgresql <span class="dt">\</span></span>
 <span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a>    postgis.sif postgres <span class="at">-h</span> 0.0.0.0 <span class="at">-p</span> 5432 <span class="dt">\</span></span>
 <span id="cb11-8"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="op">&gt;</span> pg.log <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span> <span class="kw">&amp;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -543,10 +543,10 @@
 <span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> (  <span class="co"># use brackets to separate a long query across multiple lines</span></span>
 <span id="cb17-4"><a href="" aria-hidden="true" tabindex="-1"></a>    Query(database, product)</span>
 <span id="cb17-5"><a href="" aria-hidden="true" tabindex="-1"></a>    .intersects_bbox(</span>
-<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>        min_x<span class="op">=</span><span class="fl">0.077591</span>,</span>
-<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>        min_y<span class="op">=</span><span class="fl">52.169931</span>,</span>
-<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a>        max_x<span class="op">=</span><span class="fl">0.190887</span>,</span>
-<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>        max_y<span class="op">=</span><span class="fl">52.233477</span>,</span>
+<span id="cb17-6"><a href="" aria-hidden="true" tabindex="-1"></a>        xmin<span class="op">=</span><span class="fl">0.077591</span>,</span>
+<span id="cb17-7"><a href="" aria-hidden="true" tabindex="-1"></a>        ymin<span class="op">=</span><span class="fl">52.169931</span>,</span>
+<span id="cb17-8"><a href="" aria-hidden="true" tabindex="-1"></a>        xmax<span class="op">=</span><span class="fl">0.190887</span>,</span>
+<span id="cb17-9"><a href="" aria-hidden="true" tabindex="-1"></a>        ymax<span class="op">=</span><span class="fl">52.233477</span>,</span>
 <span id="cb17-10"><a href="" aria-hidden="true" tabindex="-1"></a>        srid<span class="op">=</span><span class="dv">4326</span>,</span>
 <span id="cb17-11"><a href="" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb17-12"><a href="" aria-hidden="true" tabindex="-1"></a>    .execute()</span>
