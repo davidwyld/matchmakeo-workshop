@@ -10,10 +10,10 @@ format:
         code-line-numbers: false
         preview-links: auto
 css: style.css
-author: "David Wyld"
+author: "**David Wyld**, Tom Kelly, Thomas Zwagerman, Martin Rogers"
 date: 10/21/2026 #Date in US format... MM/DD/YYYY
 date-format: "ddd Do MMMM YYYY"
-footer: "these slides: [davidwyld.uk/quarto-presentation-template](https://davidwyld.uk/quarto-presentation-template)"
+footer: "these slides: [davidwyld.uk/matchmakeo-workshop](https://davidwyld.uk/matchmakeo-workshop)"
 from: markdown+emoji
 ---
 
@@ -36,6 +36,8 @@ Documentation :book: [bas-quasar.github.io/matchmakeo](https://bas-quasar.github
 
 ## Where you come in{.smaller}
 
+::: {.incremental}
+
 + "alpha" testing
 	+ find bugs
 	+ try to break
@@ -46,6 +48,8 @@ Documentation :book: [bas-quasar.github.io/matchmakeo](https://bas-quasar.github
 + Any fundamental elements of usability I may be missing - e.g. we've tried to think about access to setting up a database
 + wishlist of features
 + database testing
+
+:::
 
 ## Approach
 
@@ -113,7 +117,7 @@ Roadmap: <https://github.com/orgs/bas-quasar/projects/1>
 
 + Actually download and process images (yet?)
 
-# Hands-on workshop
+# :technologist: Hands-on workshop
 
 ## Database setup
 
@@ -176,7 +180,7 @@ MatchmakEO currently supports downloading from three EO metadata catalogues:
 Therefore, you'll only need credentials if you want to try using Earth Engine or G-Portal. Follow the instructions in the authentication sections for each catalogue, in the documentation at: https://bas-quasar.github.io/matchmakeo/catalogues/
 
 
-## Install matchmakEO{.smaller}
+## :shell: Install matchmakEO{.smaller}
 
 * make a working directory and change directory into it
 
@@ -213,5 +217,130 @@ Therefore, you'll only need credentials if you want to try using Earth Engine or
 
 	Note: _matchmakEO will be available on pyPI soon!_
 
+## :shell: Install other dependencies
 
-## Set up credentials for catalogues
+If using G-portal:
+
+```sh
+pip install gportal
+```
+
+If using earth engine:
+
+```sh
+pip install earthengine-api
+```
+
+For running in a notebook:
+
+```sh
+pip install ipykernel
+```
+
+## :shell: Spin up your database {.smaller}
+
++ Pull the official docker postgis image and convert to an apptainer container definition file
+
+```sh
+apptainer pull postgis.sif docker://postgis/postgis:18-master
+```
+
++ Make some directories
+
+```sh
+mkdir -p ./pg_data ./pg_run
+```
+
++ Run the container persistently in the background:
+
+```sh
+apptainer run --cleanenv \
+    --env POSTGRES_USER="my_user" \
+    --env POSTGRES_PASSWORD="my_secure_password" \
+    --env POSTGRES_DB="my_spatial_db" \
+    --bind ./pg_data:/var/lib/postgresql/data \
+    --bind ./pg_run:/var/run/postgresql \
+    postgis.sif postgres -h 0.0.0.0 -p 5432 \
+    > pg.log 2>&1 &
+```
+
+## :snake: Create your database object
+
+```python
+from matchmakeo.databases import PostGISDatabase
+
+database = PostGISDatabase(
+    username="my_user",  # as defined earlier
+    password="my_secure_password",  # as defined earlier
+    database="my_spatial_db",  # the default database name
+    host="localhost",  # if running on the same host/node as the database
+    port=5432,  # the port in the above step
+)
+
+# check that it works
+database.connect()
+```
+
+## :snake: Define a catalogue object
+
+:book: See: <https://bas-quasar.github.io/matchmakeo/autoapi/matchmakeo/catalogues/>
+
+```python
+from matchmakeo.catalogues import NasaCMR, EarthEngine, JaxaGportal
+
+catalogue = NasaCMR(
+    client_id="my_name",  # NasaCMR takes a client_id as recommended by CMR
+)
+
+# OR
+
+catalogue = EarthEngine(project_id="my_earthengine_project")
+```
+
+## :snake: Define parameters for the download {.smaller}
+
++ define a `download_params` obect to filter the temporal and spatial bounds of your download
++ some catalogues have a corresponding `download_params` type, others just use the base `DownloadParams` class
+
+```python
+from matchmakeo.download_params import NasaCMRDownloadParams
+
+download_params = NasaCMRDownloadParams(
+    start_date="2020-01-01",
+    end_date="2020-01-31",
+    lat_max=-70,
+    lat_min=-90,
+    lon_max=180,
+    lon_min=-180,
+)
+```
+
+
+## :snake: Define which product to download
+
+```python
+from matchmakeo import Product
+
+product = Product(
+    name="MOD021KM",
+    table_name="modis_aqua",
+)
+```
+
+## :snake: Run the download
+
+Run the download, passing in the `product`, `download_params` and `database` objects as arguments.
+
+```python
+catalogue.download_footprints(
+    product=product,
+    download_params=download_params,
+    database=database,
+    # optionally set dry run to be True, each catalogue behaves differently but nothing will be inserted into the database if so
+    # when dry_run=True database can be None, so you can run without a database set up
+    # dry_run=True,
+)
+```
+
+## Download another product from somewhere else!
+
