@@ -270,7 +270,7 @@ apptainer run --cleanenv \
     --env POSTGRES_USER="my_user" \
     --env POSTGRES_PASSWORD="my_secure_password" \
     --env POSTGRES_DB="my_spatial_db" \
-    --bind ./pg_data:/var/lib/postgresql/data \
+    --bind ./pg_data:/var/lib/postgresql \
     --bind ./pg_run:/var/run/postgresql \
     postgis.sif postgres -h 0.0.0.0 -p 5432 \
     > pg.log 2>&1 &
