@@ -53,8 +53,9 @@ Documentation :book: [bas-quasar.github.io/matchmakeo](https://bas-quasar.github
 
 ## :speech_balloon: Feedback
 
-+ Open GitHub issues
-+ Talk to me
++ [Open GitHub issues](https://github.com/bas-quasar/matchmakeo/issues/new)
++ [Start a GitHub discussion](https://github.com/bas-quasar/matchmakeo/discussions)
++ Talk to me (in person/slack/teams)
 + Email me `dalby@bas.ac.uk`
 
 ## Approach
@@ -335,7 +336,7 @@ Therefore, you'll only need credentials if you want to try using Earth Engine or
 * install the matchmakeo package (specify a version)
 
 	```sh
-	pip install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.1
+	pip install git+https://github.com/bas-quasar/matchmakeo.git@v0.0.2
 	```
 
 	Note: _matchmakEO will be available on pyPI soon!_
